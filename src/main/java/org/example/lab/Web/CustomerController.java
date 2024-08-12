@@ -73,7 +73,7 @@ public class CustomerController {
             model.addAttribute("error", "Customer not found");
         }
         model.addAttribute("customers", customerService.getAllCustomers());
-        return "customerForm";
+        return "CustomerForm";
     }
 
     @GetMapping("/delete")

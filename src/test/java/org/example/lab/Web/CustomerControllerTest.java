@@ -77,7 +77,7 @@ public class CustomerControllerTest {
 
     @Test
     public void testEditCustomer() {
-        Customer customer = new Customer(1, "John Doe", "john.doe@example.com", "individual", 1000.0, new Date(), 5);
+        Customer customer = new Customer(1, "John Doe", new Date());
         when(customerService.getCustomerById(1)).thenReturn(customer);
 
         String viewName = customerController.editCustomer(1, model);

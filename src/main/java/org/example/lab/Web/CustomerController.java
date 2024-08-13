@@ -105,8 +105,8 @@ public class CustomerController {
             model.addAttribute("error", "Customer not found");
         }
         model.addAttribute("customers", customerService.getAllCustomers());
-//        return "CustomerForm";
-        return "redirect:/";
+        return "CustomerForm";
+//        return "redirect:/";
 
     }
 

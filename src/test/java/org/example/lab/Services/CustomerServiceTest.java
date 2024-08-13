@@ -2,23 +2,22 @@ package org.example.lab.Services;
 
 import org.example.lab.Entities.Customer;
 import org.example.lab.Repositories.CustomerRepository;
-import org.example.lab.Services.CustomerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-class CustomerServiceTest {
+@SpringBootTest
+public class CustomerServiceTest {
 
     @Mock
     private CustomerRepository customerRepository;
@@ -26,59 +25,83 @@ class CustomerServiceTest {
     @InjectMocks
     private CustomerService customerService;
 
-    private Customer customer;
-
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         MockitoAnnotations.openMocks(this);
-        customer = new Customer(1, "John Doe", "john.doe@example.com", "Individual", 150.0, new Date(), 2023);
     }
 
     @Test
-    void testAddCustomer() {
-        when(customerRepository.save(any(Customer.class))).thenReturn(customer);
+    public void testReserveSeat_Success() {
+        // Arrange
+        String seatNumber = "1A";
+        String customerName = "John Doe";
 
-        customerService.addCustomer(customer);
+        // Mock the repository behavior
+        List<Customer> customers = Arrays.asList(
+                new Customer(1, "Jane Doe", "2B", 0),
+                new Customer(2, customerName, "", 0)
+        );
 
-        verify(customerRepository, times(1)).save(customer);
+        when(customerRepository.findAll()).thenReturn(customers);
+        when(customerRepository.save(any(Customer.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
+        boolean result = customerService.reserveSeat(seatNumber, customerName);
+
+        // Assert
+        assertTrue(result, "Seat should be reserved successfully");
+
+        // Verify interactions
+        verify(customerRepository).findAll();
+        verify(customerRepository).save(any(Customer.class));
     }
 
     @Test
-    void testGetAllCustomers() {
-        List<Customer> customers = Arrays.asList(customer);
+    public void testReserveSeat_Failure_AlreadyReserved() {
+        // Arrange
+        String seatNumber = "1A";
+        String customerName = "John Doe";
+
+        // Mock the repository behavior
+        List<Customer> customers = Arrays.asList(
+                new Customer(1, "Jane Doe", seatNumber, 0),
+                new Customer(2, customerName, "", 0)
+        );
+
         when(customerRepository.findAll()).thenReturn(customers);
 
-        List<Customer> fetchedCustomers = customerService.getAllCustomers();
+        // Act
+        boolean result = customerService.reserveSeat(seatNumber, customerName);
 
-        assertEquals(1, fetchedCustomers.size());
-        assertEquals("John Doe", fetchedCustomers.get(0).getCname());
+        // Assert
+        assertFalse(result, "Seat should not be reserved as it is already taken");
+
+        // Verify interactions
+        verify(customerRepository).findAll();
+        verify(customerRepository, never()).save(any(Customer.class));
     }
 
     @Test
-    void testGetCustomerById() {
-        when(customerRepository.findById(1)).thenReturn(Optional.of(customer));
+    public void testReserveSeat_Failure_CustomerNotFound() {
+        // Arrange
+        String seatNumber = "1A";
+        String customerName = "John Doe";
 
-        Customer fetchedCustomer = customerService.getCustomerById(1);
+        // Mock the repository behavior
+        List<Customer> customers = Arrays.asList(
+                new Customer(1, "Jane Doe", "", 0)
+        );
 
-        assertNotNull(fetchedCustomer);
-        assertEquals("John Doe", fetchedCustomer.getCname());
-    }
+        when(customerRepository.findAll()).thenReturn(customers);
 
-    @Test
-    void testUpdateCustomer() {
-        when(customerRepository.save(any(Customer.class))).thenReturn(customer);
+        // Act
+        boolean result = customerService.reserveSeat(seatNumber, customerName);
 
-        customerService.updateCustomer(customer);
+        // Assert
+        assertFalse(result, "Seat should not be reserved as the customer is not found");
 
-        verify(customerRepository, times(1)).save(customer);
-    }
-
-    @Test
-    void testDeleteCustomer() {
-        doNothing().when(customerRepository).deleteById(1);
-
-        customerService.deleteCustomer(1);
-
-        verify(customerRepository, times(1)).deleteById(1);
+        // Verify interactions
+        verify(customerRepository).findAll();
+        verify(customerRepository, never()).save(any(Customer.class));
     }
 }

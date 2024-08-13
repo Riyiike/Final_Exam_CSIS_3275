@@ -11,6 +11,17 @@
 
 
 <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+<div>
+
+    <h1 style="text-align: center;">Seat Reservation System</h1>
+
+    <!-- Button to navigate to the seat reservation page -->
+    <div class="mb-3 text-center">
+        <a href="#" th:href="@{/showSeats}" class="btn btn-secondary">Go to Seat Reservation</a>
+    </div>
+
+
+</div>
 
 <div class="container mt-5">
     <h1>There are 20 seats remaining</h1>
@@ -19,23 +30,6 @@
     <form action="#" th:action="@{/addOrUpdateCustomer}" th:object="${customer}" method="post">
         <!-- Hidden ID field for editing -->
         <input type="hidden" th:field="*{id}" />
-
-<!--        &lt;!&ndash; Customer Name &ndash;&gt;-->
-<!--        <div class="mb-3">-->
-<!--            <label for="cname" class="form-label">Enter the name of the customer:</label>-->
-<!--            <input type="text" id="cname" th:field="*{cname}" class="form-control" required />-->
-<!--            &lt;!&ndash; Display validation errors for cname &ndash;&gt;-->
-<!--            <div th:if="${#fields.hasErrors('cname')}" class="text-danger">-->
-<!--                <p th:each="error : ${#fields.errors('cname')}" th:text="${error}"></p>-->
-<!--            </div>-->
-<!--        </div>-->
-
-
-<!--        &lt;!&ndash; Purchase Date &ndash;&gt;-->
-<!--        <div class="mb-3">-->
-<!--            <label for="purchaseDate" class="form-label">Select the purchase date:</label>-->
-<!--            <input type="date" id="purchaseDate" th:field="*{purchaseDate}" class="form-control" required />-->
-<!--        </div>-->
 
 
 
@@ -75,11 +69,12 @@
             </div>
         </div>
 
-
-        <button type="submit" class="btn btn-primary">Reserve</button>
+        <div class="form-submit-btn mb-3">
+            <button type="submit" class="btn btn-primary"> Reserve</button>
+        </div>
+<!--        <button type="submit" class="btn btn-primary">Reserve</button>-->
     </form>
 </div>
-<h1 style="text-align: center;">Seat Reservation System</h1>
 <div class="container mt-5">
     <table class="table mt-5">
         <thead>
@@ -107,7 +102,7 @@
         </tr>
         </tbody>
     </table>
-    <a th:href="@{/customerForm}" class="btn btn-success mb-3">Add New Customer</a>
+<!--    <a th:href="@{/customerForm}" class="btn btn-success mb-3">Add New Customer</a>-->
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seat Reservation</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .seat-table {
+            width: 100%;
+            max-width: 600px; /* Adjust as needed */
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+        .seat-table th, .seat-table td {
+            border: 1px solid #dee2e6;
+            padding: 8px;
+            text-align: center;
+        }
+        .seat-table th {
+            background-color: #f8f9fa;
+        }
+        .seat-table td {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <h1>Seat Reservation</h1>
+    <table class="seat-table">
+        <thead>
+        <tr>
+            <th>Row</th>
+            <th>A</th>
+            <th>B</th>
+            <th>C</th>
+            <th>D</th>
+            <th>E</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>1</td>
+            <td th:text="${seatMap['1A']}"></td>
+            <td th:text="${seatMap['1B']}"></td>
+            <td th:text="${seatMap['1C']}"></td>
+            <td th:text="${seatMap['1D']}"></td>
+            <td th:text="${seatMap['1E']}"></td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td th:text="${seatMap['2A']}"></td>
+            <td th:text="${seatMap['2B']}"></td>
+            <td th:text="${seatMap['2C']}"></td>
+            <td th:text="${seatMap['2D']}"></td>
+            <td th:text="${seatMap['2E']}"></td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td th:text="${seatMap['3A']}"></td>
+            <td th:text="${seatMap['3B']}"></td>
+            <td th:text="${seatMap['3C']}"></td>
+            <td th:text="${seatMap['3D']}"></td>
+            <td th:text="${seatMap['3E']}"></td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td th:text="${seatMap['4A']}"></td>
+            <td th:text="${seatMap['4B']}"></td>
+            <td th:text="${seatMap['4C']}"></td>
+            <td th:text="${seatMap['4D']}"></td>
+            <td th:text="${seatMap['4E']}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <!-- Optional: Add additional information or actions here -->
+
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

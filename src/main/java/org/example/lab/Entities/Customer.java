@@ -41,10 +41,12 @@ public class Customer {
     @Min(value = 0, message = "Number of years must be positive.")
     private Integer yearOfPurchase;
 
+    private String seatNumber;
+
     // Default constructor
     public Customer() {}
 
-    public Customer(int id, String cname, String email, String type, double amount, Date purchaseDate, int yearOfPurchase) {
+    public Customer(int id, String cname, String email, String type, double amount, Date purchaseDate, int yearOfPurchase,String seatNumber) {
         this.id = id;
         this.cname = cname;
         this.email = email;
@@ -53,6 +55,8 @@ public class Customer {
         this.purchaseDate = purchaseDate;
         this.transactionNumber = transactionNumber;
         this.yearOfPurchase = yearOfPurchase;
+        this.seatNumber = seatNumber;
+
     }
 
     // Getters and setters
@@ -118,5 +122,13 @@ public class Customer {
 
     public void setYearOfPurchase(Integer yearOfPurchase) {
         this.yearOfPurchase = yearOfPurchase;
+    }
+
+    public String getSeatNumber() {
+        return seatNumber;
+    }
+
+    public void setSeatNumber(String seatNumber) {
+        this.seatNumber = seatNumber;
     }
 }

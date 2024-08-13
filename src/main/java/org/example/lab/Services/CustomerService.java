@@ -55,4 +55,28 @@ public class CustomerService {
     public void deleteCustomer(Integer id) {
         customerRepository.deleteById(id);
     }
+
+    // New reserveSeat method
+    public boolean reserveSeat(String seatNumber, String customerName) {
+        List<Customer> customers = customerRepository.findAll();
+
+        // Check if the seat is already reserved
+        for (Customer customer : customers) {
+            if (seatNumber.equals(customer.getSeatNumber())) {
+                return false; // Seat is already reserved
+            }
+        }
+
+        // Find the customer by name and set the seat number
+        for (Customer customer : customers) {
+            if (customerName.equals(customer.getCname())) {
+                customer.setSeatNumber(seatNumber);
+                customerRepository.save(customer);
+                return true; // Seat reserved successfully
+            }
+        }
+
+        return false; // Customer not found or invalid seat number
+    }
+
 }

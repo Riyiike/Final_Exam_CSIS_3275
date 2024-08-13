@@ -15,9 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @AllArgsConstructor
@@ -36,9 +34,33 @@ public class CustomerController {
     @GetMapping("/customerForm")
     public String showCustomerForm(Model model) {
         model.addAttribute("customer", new Customer());
-        return "CustomerForm";
+//        return "CustomerForm";
+        return "redirect:/";
+
     }
 
+//    @PostMapping("/addOrUpdateCustomer")
+//    public String addOrUpdateCustomer(@ModelAttribute @Valid Customer customer, BindingResult bindingResult, Model model) {
+//        if (bindingResult.hasErrors()) {
+//            // If there are validation errors, return to the form view with errors
+//            model.addAttribute("customer", customer);
+//            return "CustomerForm";
+//        }
+//
+//        if (customer.getId() > 0) {
+//            customerService.updateCustomer(customer); // Updating existing customer
+//        } else {
+//            customerService.addCustomer(customer); // Adding new customer
+//        }
+//
+//        // Refresh the list of customers to show the latest data in the view
+//        model.addAttribute("customers", customerService.getAllCustomers());
+//
+//        // Create a new Customer object for the form to be ready for new entries
+//        model.addAttribute("customer", new Customer());
+//
+//        return "redirect:/";
+//    }
     @PostMapping("/addOrUpdateCustomer")
     public String addOrUpdateCustomer(@ModelAttribute @Valid Customer customer, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
@@ -51,6 +73,16 @@ public class CustomerController {
             customerService.updateCustomer(customer); // Updating existing customer
         } else {
             customerService.addCustomer(customer); // Adding new customer
+        }
+
+        // Check if a seat number is provided and reserve it
+        if (customer.getSeatNumber() != null && !customer.getSeatNumber().isEmpty()) {
+            boolean seatReserved = customerService.reserveSeat(customer.getSeatNumber(), customer.getCname());
+            if (seatReserved) {
+                model.addAttribute("message", "Seat " + customer.getSeatNumber() + " reserved successfully for " + customer.getCname());
+            } else {
+                model.addAttribute("error", "Seat " + customer.getSeatNumber() + " is already reserved or invalid.");
+            }
         }
 
         // Refresh the list of customers to show the latest data in the view
@@ -73,7 +105,9 @@ public class CustomerController {
             model.addAttribute("error", "Customer not found");
         }
         model.addAttribute("customers", customerService.getAllCustomers());
-        return "CustomerForm";
+//        return "CustomerForm";
+        return "redirect:/";
+
     }
 
     @GetMapping("/delete")
@@ -85,12 +119,12 @@ public class CustomerController {
         return "redirect:/";
     }
 
-    @GetMapping("/sales-summary")
-    public String showSalesSummary(Model model) {
-        List<Customer> customers = customerService.getAllCustomers();
-        model.addAttribute("customers", customers);
-        return "SummaryPage";
-    }
+//    @GetMapping("/sales-summary")
+//    public String showSalesSummary(Model model) {
+////        List<Customer> customers = customerService.getAllCustomers();
+////        model.addAttribute("customers", customers);
+//        return "SeatReservationPage";
+//    }
 
     @GetMapping("/compound-interest")
     public String getCompoundInterest(
@@ -143,4 +177,46 @@ public class CustomerController {
 
         return results;
     }
+
+    @PostMapping("/reserveSeat")
+    public String reserveSeat(@RequestParam("seatNumber") String seatNumber, @RequestParam("cname") String customerName, Model model) {
+        boolean seatReserved = customerService.reserveSeat(seatNumber, customerName);
+
+        if (seatReserved) {
+            model.addAttribute("message", "Seat " + seatNumber + " reserved successfully for " + customerName);
+        } else {
+            model.addAttribute("error", "Seat " + seatNumber + " is already reserved or invalid.");
+        }
+
+        // Update seat reservation table
+        Map<String, String> seatMap = new HashMap<>();
+        List<Customer> customers = customerService.getAllCustomers();
+
+        for (String seat : Arrays.asList("1A", "1B", "1C", "1D", "1E", "2A", "2B", "2C", "2D", "2E", "3A", "3B", "3C", "3D", "3E", "4A", "4B", "4C", "4D", "4E")) {
+            Optional<Customer> reservedCustomer = customers.stream()
+                    .filter(c -> seat.equals(c.getSeatNumber()))
+                    .findFirst();
+            seatMap.put(seat, reservedCustomer.map(Customer::getCname).orElse("Available"));
+        }
+
+        model.addAttribute("seatMap", seatMap);
+        return "Main"; // Ensure this view reflects the updated seat reservation table
+    }
+
+    @GetMapping("/showSeats")
+    public String showSeats(Model model) {
+        Map<String, String> seatMap = new HashMap<>();
+        List<Customer> customers = customerService.getAllCustomers();
+
+        for (String seat : Arrays.asList("1A", "1B", "1C", "1D", "1E", "2A", "2B", "2C", "2D", "2E", "3A", "3B", "3C", "3D", "3E", "4A", "4B", "4C", "4D", "4E")) {
+            Optional<Customer> reservedCustomer = customers.stream()
+                    .filter(c -> seat.equals(c.getSeatNumber()))
+                    .findFirst();
+            seatMap.put(seat, reservedCustomer.map(Customer::getCname).orElse("Available"));
+        }
+
+        model.addAttribute("seatMap", seatMap);
+        return "SeatReservationPage"; // Ensure this view reflects the seat reservation table
+    }
+
 }

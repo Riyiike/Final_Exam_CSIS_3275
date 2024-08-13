@@ -82,7 +82,7 @@ public class CustomerControllerTest {
 
         String viewName = customerController.editCustomer(1, model);
 
-        assertEquals("customerForm", viewName);
+        assertEquals("CustomerForm", viewName);
         verify(model, times(1)).addAttribute(eq("customer"), eq(customer));
     }
 
